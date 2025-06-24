@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+asyncio_default_fixture_loop_scope = 'function'
+
+[tool.taskipy.tasks]
+lint = 'isort . && black .'
+test = 'pytest -s -x --cov=src -vv && coverage html'
+dev = 'fastapi dev src/main.py'
+run = 'fastapi run src/main.py'
