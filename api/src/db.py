@@ -1,31 +1,19 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from os import getenv
+
 from dotenv import load_dotenv
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+
 from src.settings import Settings
-from src.models.entities import table_registry
-from sqlalchemy.pool import StaticPool
 
 load_dotenv()
 
-# engine = None
-# if getenv('ENV') == 'test':
-#     engine = create_async_engine(
-#         "sqlite+aiosqlite:///:memory:",
-#         connect_args={"check_same_thread": False},
-#         poolclass=StaticPool,
-#     )
-# else:
 engine = create_async_engine(Settings().DATABASE_URL)
 
 
 async def get_session():
-    # if getenv('ENV') == 'test':
-    #     async with engine.begin() as conn:
-    #         await conn.run_sync(table_registry.metadata.create_all)
-    #     async with AsyncSession(engine, expire_on_commit=False) as session:
-    #         yield session
-    #     async with engine.begin() as conn:
-    #         await conn.run_sync(table_registry.metadata.drop_all)
-    # else:
     async with AsyncSession(engine, expire_on_commit=False) as session:
         yield session
+
+
+# user 1264167b-088c-42a8-86c0-c5db94fa18e3
+# string 0d0a04f7-ae31-43b5-8db4-613fc8da8cdb

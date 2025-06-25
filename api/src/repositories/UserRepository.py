@@ -60,6 +60,17 @@ class UserRepository:
         )
         return user.scalar()
 
+    async def check_conflicts(self, id: UUID, username: str = "", email: str = ""):
+        """
+        Verifica se, além do usuário com o id passado,  já existe outro usuário com mesmo username ou email
+        """
+        user = await self.session.execute(
+            select(User).where(
+                User.id != id, (User.username == username) | (User.email == email)
+            )
+        )
+        return user.scalar()
+
 
 def get_user_repository(session: AsyncSession = Depends(get_session)):
     return UserRepository(session)

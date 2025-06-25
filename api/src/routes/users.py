@@ -40,8 +40,8 @@ async def update_user(repository: repository, id: UUID, data: UserRequest):
     user = await repository.read_by_id(id)
     if not user:
         raise HTTPException(status_code=HTTPStatus.NOT_FOUND, detail="User not found.")
-    exists = await repository.check_if_exists(data.username, data.email)
-    if exists and exists.id != user.id:
+    conflict = await repository.check_conflicts(id, data.username, data.email)
+    if conflict:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST, detail="User already exists."
         )
