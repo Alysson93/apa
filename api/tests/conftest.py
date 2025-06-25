@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../')
 
 import pytest_asyncio
 from fastapi.testclient import TestClient
@@ -16,8 +16,8 @@ from src.repositories.UserRepository import UserRepository, get_user_repository
 @pytest_asyncio.fixture
 async def session():
     engine = create_async_engine(
-        "sqlite+aiosqlite:///:memory:",
-        connect_args={"check_same_thread": False},
+        'sqlite+aiosqlite:///:memory:',
+        connect_args={'check_same_thread': False},
         poolclass=StaticPool,
     )
     async with engine.begin() as conn:
@@ -41,28 +41,37 @@ def client(session):
 @pytest_asyncio.fixture
 def user_request():
     return {
-        "username": "JohnDoe",
-        "password": "123456",
-        "name": "John",
-        "last_name": "Doe",
-        "email": "john@mail.com",
-        "phone": "(00) 9 1234 - 5678",
-        "role": "client",
+        'username': 'JohnDoe',
+        'password': '123456',
+        'name': 'John',
+        'last_name': 'Doe',
+        'email': 'john@mail.com',
+        'phone': '(00) 9 1234 - 5678',
+        'role': 'client',
     }
 
 
 @pytest_asyncio.fixture
 async def user_db(session):
-    user = User(
-        username="JohnDoe",
-        password="123456",
-        name="John",
-        last_name="Doe",
-        email="john@mail.com",
-        phone="(00) 9 1234 - 5678",
-        role="client",
+    john = User(
+        username='JohnDoe',
+        password='123456',
+        name='John',
+        last_name='Doe',
+        email='john@mail.com',
+        phone='(00) 9 1234 - 5678',
+        role='client',
     )
-    session.add(user)
+    jane = User(
+        username='JaneDoe',
+        password='123456',
+        name='Jane',
+        last_name='Doe',
+        email='jane@mail.com',
+        phone='(00) 9 1234 - 5678',
+        role='client',
+    )
+    session.add_all([john, jane])
     await session.commit()
-    await session.refresh(user)
-    return user
+    await session.refresh(john)
+    return john

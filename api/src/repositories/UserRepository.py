@@ -10,7 +10,6 @@ from src.models.entities import User
 
 
 class UserRepository:
-
     def __init__(self, session: AsyncSession):
         self.session = session
 
@@ -30,7 +29,9 @@ class UserRepository:
         return user
 
     async def read(self, offset: int, limit: int):
-        users = await self.session.execute(select(User).offset(offset).limit(limit))
+        users = await self.session.execute(
+            select(User).offset(offset).limit(limit)
+        )
         return users.scalars()
 
     async def read_by_id(self, id: UUID):
@@ -54,19 +55,24 @@ class UserRepository:
         await self.session.delete(user)
         await self.session.commit()
 
-    async def check_if_exists(self, username: str = "", email: str = ""):
+    async def check_if_exists(self, username: str = '', email: str = ''):
         user = await self.session.execute(
-            select(User).where((User.username == username) | (User.email == email))
+            select(User).where(
+                (User.username == username) | (User.email == email)
+            )
         )
         return user.scalar()
 
-    async def check_conflicts(self, id: UUID, username: str = "", email: str = ""):
+    async def check_conflicts(
+        self, id: UUID, username: str = '', email: str = ''
+    ):
         """
         Verifica se, além do usuário com o id passado,  já existe outro usuário com mesmo username ou email
         """
         user = await self.session.execute(
             select(User).where(
-                User.id != id, (User.username == username) | (User.email == email)
+                User.id != id,
+                (User.username == username) | (User.email == email),
             )
         )
         return user.scalar()

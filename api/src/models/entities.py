@@ -9,10 +9,14 @@ table_registry = registry()
 
 @table_registry.mapped_as_dataclass
 class User:
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
-    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4, init=False)
-    username: Mapped[str] = mapped_column(String(12), unique=True, nullable=False)
+    id: Mapped[UUID] = mapped_column(
+        Uuid, primary_key=True, default=uuid4, init=False
+    )
+    username: Mapped[str] = mapped_column(
+        String(12), unique=True, nullable=False
+    )
     password: Mapped[str] = mapped_column(String(250), nullable=False)
     name: Mapped[str] = mapped_column(String(20), nullable=False)
     last_name: Mapped[str] = mapped_column(String(80), nullable=False)

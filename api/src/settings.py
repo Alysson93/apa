@@ -7,9 +7,9 @@ load_dotenv()
 
 class Settings:
 
-    ENV = getenv("ENV")
+    ENV = getenv('ENV')
 
-    if ENV == "prd":
-        DATABASE_URL = getenv("DATABASE_URL_PRD")
+    if ENV == 'prd':
+        DATABASE_URL = getenv('DATABASE_URL_PRD')
     else:
-        DATABASE_URL = getenv("DATABASE_URL_HML")
+        DATABASE_URL = getenv('DATABASE_URL_HML')
