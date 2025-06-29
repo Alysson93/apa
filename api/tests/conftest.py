@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../')
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../")
 
 import pytest_asyncio
 from fastapi.testclient import TestClient
@@ -11,13 +11,14 @@ from sqlalchemy.pool import StaticPool
 from src.main import app
 from src.models.entities import User, table_registry
 from src.repositories.UserRepository import UserRepository, get_user_repository
+from src.security.hash import get_password_hash
 
 
 @pytest_asyncio.fixture
 async def session():
     engine = create_async_engine(
-        'sqlite+aiosqlite:///:memory:',
-        connect_args={'check_same_thread': False},
+        "sqlite+aiosqlite:///:memory:",
+        connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
     async with engine.begin() as conn:
@@ -41,35 +42,35 @@ def client(session):
 @pytest_asyncio.fixture
 def user_request():
     return {
-        'username': 'JohnDoe',
-        'password': '123456',
-        'name': 'John',
-        'last_name': 'Doe',
-        'email': 'john@mail.com',
-        'phone': '(00) 9 1234 - 5678',
-        'role': 'client',
+        "username": "JohnDoe",
+        "password": "123456",
+        "name": "John",
+        "last_name": "Doe",
+        "email": "john@mail.com",
+        "phone": "(00) 9 1234 - 5678",
+        "role": "client",
     }
 
 
 @pytest_asyncio.fixture
 async def user_db(session):
     john = User(
-        username='JohnDoe',
-        password='123456',
-        name='John',
-        last_name='Doe',
-        email='john@mail.com',
-        phone='(00) 9 1234 - 5678',
-        role='client',
+        username="JohnDoe",
+        password=get_password_hash("123456"),
+        name="John",
+        last_name="Doe",
+        email="john@mail.com",
+        phone="(00) 9 1234 - 5678",
+        role="client",
     )
     jane = User(
-        username='JaneDoe',
-        password='123456',
-        name='Jane',
-        last_name='Doe',
-        email='jane@mail.com',
-        phone='(00) 9 1234 - 5678',
-        role='client',
+        username="JaneDoe",
+        password=get_password_hash("123456"),
+        name="Jane",
+        last_name="Doe",
+        email="jane@mail.com",
+        phone="(00) 9 1234 - 5678",
+        role="client",
     )
     session.add_all([john, jane])
     await session.commit()

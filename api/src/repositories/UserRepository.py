@@ -7,6 +7,7 @@ from sqlalchemy import select
 from src.db import AsyncSession, get_session
 from src.models.DTOs import UserRequest
 from src.models.entities import User
+from src.security.hash import get_password_hash
 
 
 class UserRepository:
@@ -16,7 +17,7 @@ class UserRepository:
     async def create(self, data: UserRequest):
         user = User(
             username=data.username,
-            password=data.password,
+            password=get_password_hash(data.password),
             name=data.name,
             last_name=data.last_name,
             email=data.email,
@@ -29,9 +30,7 @@ class UserRepository:
         return user
 
     async def read(self, offset: int, limit: int):
-        users = await self.session.execute(
-            select(User).offset(offset).limit(limit)
-        )
+        users = await self.session.execute(select(User).offset(offset).limit(limit))
         return users.scalars()
 
     async def read_by_id(self, id: UUID):
@@ -40,7 +39,7 @@ class UserRepository:
 
     async def update(self, user: User, data: UserRequest):
         user.username = data.username
-        user.password = data.password
+        user.password = get_password_hash(data.password)
         user.name = data.name
         user.last_name = data.last_name
         user.email = data.email
@@ -55,17 +54,13 @@ class UserRepository:
         await self.session.delete(user)
         await self.session.commit()
 
-    async def check_if_exists(self, username: str = '', email: str = ''):
+    async def check_if_exists(self, username: str = "", email: str = ""):
         user = await self.session.execute(
-            select(User).where(
-                (User.username == username) | (User.email == email)
-            )
+            select(User).where((User.username == username) | (User.email == email))
         )
         return user.scalar()
 
-    async def check_conflicts(
-        self, id: UUID, username: str = '', email: str = ''
-    ):
+    async def check_conflicts(self, id: UUID, username: str = "", email: str = ""):
         """
         Verifica se, além do usuário com o id passado,  já existe outro usuário com mesmo username ou email
         """
